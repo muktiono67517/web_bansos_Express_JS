@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | General Form Elements</title>  
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  
+  <!-- Responsive CSS -->
+  <link rel="stylesheet" href="css/responsive.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="gambar/fevicon.png" type="image/gif" />
+  
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <!-- Owl Carousel -->
+  <link href="https://fonts.googleapis.com/css?family=Great+Vibes|Poppins:400,700&display=swap&subset=latin-ext" rel="stylesheet">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  
+  <!-- FancyBox -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- General Form Elements -->
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">Data Pendukung Bantuan Sosial Kalurahan Hargorejo</h3>
+    </div>
+    <!-- /.card-header -->
+   <!-- Combined Form Start -->
+
+   <form action="/hargorejo/hargorejouploaddatapendukungbantuansosial" method="post" enctype="multipart/form-data">
+    <div class="card-body">
+      <div class="form-group">
+        <label for="beritaAcara">Berita Acara Musyawarah Kelurahan Hargorejo</label>
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" class="form-control" id="beritaAcara" name="beritaAcara" accept="application/pdf">
+          </div>
+         
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="wakilPeserta">Daftar Mengetahui Wakil/Peserta Musyawarah Kelurahan Hargorejo</label>
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" class="form-control" id="wakilPeserta" name="wakilPeserta" accept="application/pdf">
+          </div>
+  
+        </div>
+      </div>
+  
+      
+      <div class="form-group">
+        <label for="daftarHadir">Daftar Hadir Musyawarah Kelurahan Hargorejo</label>
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" class="form-control" id="daftarHadir" name="daftarHadir" accept="application/pdf">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+  
+
+     
+  <!-- /.card -->
+
+
+  <div class="col-12">
+    <div class="card mt-2"> <!-- Tambahkan kelas mt-2 di sini -->
+        <div class="card-header">
+            <h3 class="card-title">Data Penerima Bantuan Sosial Kalurahan Hargorejo</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>NIK Kepala Keluarga</th>
+                        <th>Jumlah Anggota Keluarga</th>
+                        <th>Alamat</th>
+                        <th>RT</th>
+                        <th>RW</th>
+                        <th>Kategori</th>
+                        <th>Action</th> <!-- Jika ada kolom untuk aksi -->
+                    </tr>
+                </thead>
+                <tbody>
+                  <% data_penerima_bantuan_sosial.forEach(function(data_penerima_bantuan_sosial,index) { %>
+                    <li><%= data_penerima_bantuan_sosial.name %></li>
+                    <tr>
+                        <td><%= data_penerima_bantuan_sosial.nama %></td>
+                        <td><%= data_penerima_bantuan_sosial.nik_kepala_keluarga %></td>
+                        <td><%= data_penerima_bantuan_sosial.jumlah_anggota_keluarga %></td>
+                        <td><%= data_penerima_bantuan_sosial.alamat %></td>
+                        <td><%= data_penerima_bantuan_sosial.rt %></td>
+                        <td><%= data_penerima_bantuan_sosial.rw %></td>
+                        <td><%= data_penerima_bantuan_sosial.kategori %></td>
+                        <td>
+                          <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalUbahData<%= index %>">Ubah</button>
+                          <button type="button" class="btn btn-danger" onclick="hapusData('<%= data_penerima_bantuan_sosial.nik_kepala_keluarga %>')">Hapus</button>
+                        </td>
+                      </tr>
+                      <!-- Modal Ubah Data -->
+                      <div class="modal fade" id="modalUbahData<%= index %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel<%= index %>" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <!-- Header Modal -->
+                            <div class="modal-header">
+                              <h4 class="modal-title" id="modalLabel<%= index %>">Judul Modal</h4>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <!-- Body Modal Ubah Data -->
+                            <div class="modal-body">
+                              <form id="formupdatedatabansos" action="/hargorejo/updatedatapenerimabantuansosialhargorejo" method="POST">
+                                <div class="form-group">
+                                  <label for="nama">Nama</label>
+                                  <input type="text" class="form-control" id="nama" name="nama_modal" value="<%= data_penerima_bantuan_sosial.nama %>">
+                                </div>
+                                <div class="form-group">
+                                  <label for="nik">NIK Kepala Keluarga</label>
+                                  <input type="text" class="form-control" id="nik_modal" name="nik_modal" value="<%= data_penerima_bantuan_sosial.nik_kepala_keluarga %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                  <label for="jumlah">Jumlah Anggota Keluarga</label>
+                                  <input type="text" class="form-control" id="jumlah" name="jumlah_anggota_keluarga_modal" value="<%= data_penerima_bantuan_sosial.jumlah_anggota_keluarga %>">
+                                </div>
+                                <div class="form-group">
+                                  <label for="alamat">Alamat</label>
+                                  <input type="text" class="form-control" id="alamat" name="alamat_modal" value="<%= data_penerima_bantuan_sosial.alamat %>">
+                                </div>
+                                <div class="form-group">
+                                  <label for="rt">RT</label>
+                                  <input type="text" class="form-control" id="rt" name="rt_modal" value="<%= data_penerima_bantuan_sosial.rt %>">
+                                </div>
+                                <div class="form-group">
+                                  <label for="rw">RW</label>
+                                  <input type="text" class="form-control" id="rw" name="rw_modal" value="<%= data_penerima_bantuan_sosial.rw %>">
+                                </div>
+                                <div class="form-group">
+                                  <label for="kategori">Kategori</label>
+                                  <select class="form-control" id="kategori_modal" name="kategori_modal">
+                                    <option value="Layak" <% if (data_penerima_bantuan_sosial.kategori === 'Layak') { %> selected <% } %>>Layak</option>
+                                    <option value="Tidak Layak" <% if (data_penerima_bantuan_sosial.kategori === 'Tidak Layak') { %> selected <% } %>>Tidak Layak</option>
+                                  </select>
+                                </div>
+                              </form>
+                              <span style="color:red;">** Jika untuk mengganti nik kepala keluarga yang salah, harus di hapus terlebih dahulu datanya**</span>
+                            </div>
+                            <!-- Footer Modal -->
+                            <div class="modal-footer">
+                              <button type="submit" class="btn btn-success" onclick="UbahFormTambahData(); reloadPage();">Simpan</button>
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.modal -->
+                      <% }); %>
+                </tbody>
+                
+            </table>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalTambahData">Tambah Data</button>
+
+             <!-- Modal Tambah Data -->
+             <div class="modal fade" id="modalTambahData">
+              <div class="modal-dialog">
+                <div class="modal-content">
+           <!-- Header Modal Tambah Data -->
+            <div class="modal-header">
+              <h4 class="modal-title">Judul Modal</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Body Modal Tambah Data -->
+            <div class="modal-body">
+              <form id="formtambahdatabansos" action="/hargorejo/tambahdatapenerimabantuansosialhargorejo" method="POST">
+                <div class="form-group">
+                  <label for="nama">Nama</label>
+                  <input type="text" class="form-control" id="nama" name="nama_modal" >
+                </div>
+                <div class="form-group">
+                    <label for="nik">NIK Kepala Keluarga</label>
+                    <input type="text" class="form-control" id="nik_modal_tambah" name="nik_modal" minlength="16" maxlength="16" required onkeydown="blockNonNumericInput(event)"> 
+                </div>
+                
+                <div class="form-group">
+                  <label for="jumlah">Jumlah Anggota Keluarga</label>
+                  <input type="text" class="form-control" id="jumlah" name="jumlah_anggota_keluarga_modal" required onkeydown="blockNonNumericInput(event)" >
+                </div>
+                <div class="form-group">
+                  <label for="alamat">Alamat</label>
+                  <input type="text" class="form-control" id="alamat" name="alamat_modal" required >
+                </div>
+                <div class="form-group">
+                  <label for="rt">RT</label>
+                  <input type="text" class="form-control" id="rt" name="rt_modal" required onkeydown="blockNonNumericInput(event)" >
+                </div>
+                <div class="form-group">
+                  <label for="rw">RW</label>
+                  <input type="text" class="form-control" id="rw" name="rw_modal" required onkeydown="blockNonNumericInput(event)" >
+                </div>
+                
+                <div class="form-group">
+                  <label for="kategori">Kategori</label>
+                  <select class="form-control" id="kategori_modal_tambah_data" name="kategori_modal_tambah_data">
+                    <option value="Layak">Layak</option>
+                    <option value="Tidak Layak">Tidak Layak</option>
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-success" onclick="validateAndSubmitForm()">Simpan</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                </div>
+              </form>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>
+
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- AdminLTE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+
+<!-- bs-custom-file-input -->
+<script src="../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+<!-- Page specific script -->
+<script>
+$(function () {
+  bsCustomFileInput.init();
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+<!-- AJAX UNTUK EXECUTE MODAL TAMBAH DATA -->
+<script>
+
+  // Fungsi untuk memuat ulang halaman
+  function reloadPage() {
+    location.reload(); // Memuat ulang halaman
+  }
+
+
+ // Fungsi untuk mengirim data tambah melalui AJAX
+ function submitFormTambahData() {
+    var formData = $("#formtambahdatabansos").serialize();
+    $.ajax({
+      type: "POST",
+      url: "/hargorejo/tambahdatapenerimabantuansosialhargorejo",
+      data: formData,
+      success: function(response) {
+        alert('Data berhasil disimpan!');
+        window.location.reload();
+      },
+      error: function(xhr, status, error) {
+        console.error();
+        alert('xhr.responseText');
+      }
+    });
+  }
+
+
+  // ANTI SERANGAN INSPEKSI ELEMEN
+  // Mendapatkan elemen input
+  var inputElement = document.getElementById("nik_modal");
+    
+    // Menyimpan nilai awal input
+    var originalValue = inputElement.value;
+    
+    // Mendeteksi perubahan nilai input
+    inputElement.addEventListener("input", function(event) {
+        // Mengembalikan nilai input ke nilai awal jika ada perubahan
+        inputElement.value = originalValue;
+    });
+
+
+
+
+
+
+
+ 
+    // Menangani klik tombol "Ubah" agar  di samping setiap entri data dapat membuka modal yang sesuai dengan data yang bersangkutan.
+
+ document.addEventListener("DOMContentLoaded", function() {
+        var buttons = document.querySelectorAll('.btn-warning');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Dapatkan ID modal yang sesuai dari atribut data-target
+                var targetModalId = button.getAttribute('data-target');
+                // Tampilkan modal yang sesuai
+                $(targetModalId).modal('show');
+            });
+        });
+    });
+
+
+
+    // Konfirmasi hapus data 
+
+    function hapusData(nik_kepala_keluarga) {
+    // Konfirmasi pengguna sebelum menghapus data
+    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+        // Buat permintaan DELETE menggunakan fetch API
+        fetch('/hargowilis/hapusdatapenerimabantuansosialhargowilis/' + nik_kepala_keluarga, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            // Periksa status respons
+            if (!response.ok) {
+                throw new Error('Terjadi kesalahan saat menghapus data');
+            }
+            // Jika berhasil, lakukan sesuatu, misalnya, muat ulang halaman
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle error jika terjadi
+            // Misalnya, tampilkan pesan kepada pengguna
+            alert('Terjadi kesalahan saat menghapus data');
+        });
+    }
+}
+
+
+
+  // Fungsi untuk validasi form tambah
+
+  function validateAndSubmitForm() {
+  var form = document.getElementById("formtambahdatabansos");
+  var nikInput = document.getElementById("nik_modal_tambah").value;
+
+  // Memeriksa apakah input NIK sudah diisi
+  if (form.checkValidity() && nikInput.length === 16) {
+    submitFormTambahData();
+  } else if (nikInput.length !== 16) {
+    alert("NIK Kepala Keluarga harus terdiri dari 16 digit.");
+  } else {
+    alert("Mohon lengkapi semua kolom dengan benar.");
+  }
+}
+
+
+function blockNonNumericInput(event) {
+    // Mendapatkan kode tombol dari event keyboard
+    const keyCode = event.keyCode || event.which;
+
+    // Mencegah input jika bukan angka atau tombol khusus seperti delete, backspace, panah navigasi
+    if (!(keyCode >= 48 && keyCode <= 57) && // 0-9
+        !(keyCode >= 96 && keyCode <= 105) && // Numpad 0-9
+        ![8, 9, 37, 39, 46].includes(keyCode)) { // Tombol khusus
+        event.preventDefault(); // Mencegah input
+    }
+}
+
+// Menambahkan event listener untuk setiap elemen input
+document.getElementById('nik_modal_tambah').addEventListener('keydown', blockNonNumericInput);
+document.getElementById('jumlah').addEventListener('keydown', blockNonNumericInput);
+document.getElementById('rt').addEventListener('keydown', blockNonNumericInput);
+document.getElementById('rw').addEventListener('keydown', blockNonNumericInput);
+
+
+
+
+</script>
+
+

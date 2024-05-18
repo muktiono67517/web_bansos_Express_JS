@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hargowilis</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <!-- Custom styles -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Favicon -->
+    <link rel="icon" href="gambar/fevicon.png" type="image/gif" />
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+    <!-- Owl Carousel -->
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <!-- Fancybox -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+</head>
+<body>
+<!-- Banner background section start -->
+<div class="banner_bg_main">
+    <!-- Header top section start -->
+    <div class="container">
+        <div class="header_section_top">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="custom_menu">
+                        <ul>
+                            <li><a href="#">Selamat Datang <=user></a></li>
+                        </ul>
+                    </div>
+                    <!-- Your custom CSS file -->
+                    <link rel="stylesheet" href="desain-khusus.css">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header top section end -->
+    <!-- Logo section start -->
+    <div class="logo_section" >
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <!-- Your logo content here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Logo section end -->
+    <!-- Header section start -->
+    <div class="header_section" >
+        <div class="container">
+            <div class="containt_main">
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <a href="/halamandashboard">Beranda</a>
+                    <a href="/hargorejo">Hargorejo</a>
+                    <a href="/hargomulyo">Hargomulyo</a>
+                    <a href="/hargotirto">Hargotirto</a>
+                    <a href="/hargowilis">Hargowilis</a>
+                    <a href="/kalirejo">Kalirejo</a>
+                </div>
+                <span class="toggle_icon" onclick="openNav()"><img src="images/3_lines.ico"></span>
+                <div class="main">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Cari Data" >
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="button" style="background-color: #998F99; border-color:#998F99 ">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="header_box">
+                    <div class="lang_box ">
+                        <!-- Your language content here -->
+                    </div>
+                    <div class="login_menu">
+                        <ul>
+                            <li><a href="#">
+                                <i class="fa fa-user" aria-hidden="true" style="color: black;"></i>
+                                <span class="padding_10" style="color: black;" >Profil</span></a>
+                            </li>
+                            <li><a href="#">
+                                <i class="fa fa-user" aria-hidden="true" style="color: black;"></i>
+                                <span class="padding_10" style="color: black;">Keluar</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header section end -->
+    <!-- Partial section for master data -->
+    <div class="partials_master_data_hargowilis" id="footerSection">
+        <%- include('partials/master_data_hargowilis') %>
+    </div>
+</div>
+ <!-- footer section start -->
+ <div class="footer_section layout_padding">
+   <div class="container">
+      <div class="location_main">Bantuan : <a href="https://wa.me/628112912234">08112912234</a></div>
+      <div class="location_main">Alamat: Jl. Ngaseman, Hargorejo, Kokap, Kulon Progo: <a><br>
+      <div class="location_main">Email: kokap@kulonprogokab.go.id <a><br>
+   </div>
+</div>
+<!-- footer section end -->
+<!-- Copyright section start -->
+<div class="copyright_section">
+    <div class="container">
+        <p class="copyright_text">© 2024 All Rights Reserved Kapanewon Kokap</p>
+    </div>
+</div>
+<!-- Copyright section end -->
+<!-- JavaScript files -->
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/jquery-3.0.0.min.js"></script>
+<script src="js/plugin.js"></script>
+<!-- Sidebar -->
+<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="js/custom.js"></script>
+<!-- Script for opening and closing the sidebar -->
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("footerSection").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("footerSection").style.marginLeft = "0";
+    }
+</script>
+</body>
+</html>

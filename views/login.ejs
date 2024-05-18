@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <!-- Bootstrap CSS (required by AdminLTE) -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    .login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    .login-background {
+      position: absolute;
+      top: -50px; /* Angka negatif untuk mengangkat gambar */
+      left: 0;
+      width: 100%;
+      z-index: -1;
+    }
+
+    .login-box {
+      position: relative;
+      z-index: 1;
+      background-color: #fff; /* Atur warna latar belakang untuk memisahkan gambar dengan konten */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Efek bayangan untuk menambah dimensi */
+    }
+  </style>
+</head>
+<body class="hold-transition login-page">
+  <img src="/images/kapanewon kokap.png" alt="Background" class="login-background">
+  <!-- Gambar latar belakang di atas login box -->
+
+  <div class="login-box">
+    <div class="login-logo">
+      <a href="#">Website Pengolahan Bantuan Sosial Kapanewon Kokap</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">Masuk untuk mengolah data</p>
+
+        <form action="/login" method="POST">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Username" name="username" required >
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Password" name="password" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-8">
+            </div>
+            <!-- /.col -->
+            <div class="col-5">
+              <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+            </div>
+            <!-- /.col -->
+          </div>
+        </form>
+      <!-- /.login-card-body -->
+    </div>
+  </div>
+  <!-- /.login-box -->
+
+  <!-- AdminLTE JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
+  <!-- jQuery (required by AdminLTE) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <!-- Bootstrap JS (required by AdminLTE) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
