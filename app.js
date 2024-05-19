@@ -2,11 +2,14 @@
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
+const fs = require('fs');
+const cors = require('cors');
 
 // Inisialisasi aplikasi Express
 const app = express();
 const multer = require('multer');
-
+// Gunakan middleware cors
+app.use(cors());
 
 
 var bodyParser = require('body-parser');
@@ -169,34 +172,141 @@ app.delete('/hargorejo/hapusdatapenerimabantuansosialhargorejo/:nik_modal', (req
 
 
 
-// ***********************PDF UPLOAD Hargorejo************************
 
+// ***********************PDF OLAh Hargorejo************************
+
+
+const allowedFilenames = {
+  beritaAcara: 'berita_acara_hargorejo.pdf',
+  wakilPeserta: 'wakil_peserta_hargorejo.pdf',
+  daftarHadir: 'daftar_hadir_hargorejo.pdf'
+};
 
 // Konfigurasi penyimpanan file menggunakan multer
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Tentukan lokasi penyimpanan file
     cb(null, 'public/file_data_pendukung_bantuan_sosial');
   },
   filename: function (req, file, cb) {
-    // Tetapkan nama file yang akan disimpan
-    cb(null, file.originalname);
+    cb(null, allowedFilenames[file.fieldname]);
   }
 });
 
 // Inisialisasi middleware multer
 const upload = multer({ storage: storage });
 
+// Middleware untuk memeriksa keberadaan file dan nama file
+function checkFileExistsAndName(req, res, next) {
+  for (const field in req.files) {
+    const file = req.files[field][0];
+    if (file.originalname !== allowedFilenames[field]) {
+      return res.status(400).json({ message: `Nama file untuk ${field} harus ${allowedFilenames[field]}.` });
+    }
+    const filePath = path.join('public/file_data_pendukung_bantuan_sosial', allowedFilenames[field]);
+    if (fs.existsSync(filePath)) {
+      // return res.status(400).json({ message: `File untuk ${field} sudah ada. Harap hapus file terlebih dahulu.` });
+    }
+  }
+  next();
+}
+
+// Endpoint untuk menangani permintaan unggah file
 // Endpoint untuk menangani permintaan unggah file
 app.post('/hargorejo/hargorejouploaddatapendukungbantuansosial', upload.fields([
-  { name: 'beritaAcara', maxCount: 1 }, // Untuk file berita acara
-  { name: 'wakilPeserta', maxCount: 1 }, // Untuk file daftar wakil/peserta
-  { name: 'daftarHadir', maxCount: 1 } // Untuk file daftar hadir
-]), (req, res) => {
-  // File berhasil diunggah, lakukan tindakan selanjutnya
-  res.send('File berhasil diunggah.');
+  { name: 'beritaAcara', maxCount: 1 },
+  { name: 'wakilPeserta', maxCount: 1 },
+  { name: 'daftarHadir', maxCount: 1 }
+]), checkFileExistsAndName, (req, res) => {
+  // Dapatkan data dari formulir atau dari file yang diunggah
+  const data = {
+    beritaAcara: req.files['beritaAcara'][0].filename,
+    wakilPeserta: req.files['wakilPeserta'][0].filename,
+    daftarHadir: req.files['daftarHadir'][0].filename
+    // tambahkan data lainnya yang diperlukan dari formulir jika ada
+  };
+
+  // Simpan path file ke dalam database (menggunakan path relatif)
+  const beritaAcaraPath = `/public/file_data_pendukung_bantuan_sosial/${data.beritaAcara}`;
+  const wakilPesertaPath = `/public/file_data_pendukung_bantuan_sosial/${data.wakilPeserta}`;
+  const daftarHadirPath = `/public/file_data_pendukung_bantuan_sosial/${data.daftarHadir}`;
+
+  // Kueri SQL untuk menyisipkan data ke dalam tabel
+  const sqlQuery = 'INSERT INTO data_pendukung_bantuan_sosial (berita_acara_musyawarah_kalurahan, daftar_mengetahui_wakil_peserta_musyawarah_kalurahan, daftar_hadir_musyawarah_kalurahan, id_wilayah_kalurahan) VALUES (?, ?, ?, 1)';
+
+  // Eksekusi kueri SQL
+  db.query(sqlQuery, [beritaAcaraPath, wakilPesertaPath, daftarHadirPath], (err, result) => {
+    if (err) {
+      return res.status(500).send('Gagal menyisipkan data ke dalam database');
+    }
+    res.status(200).send('File berhasil diunggah dan data berhasil disimpan ke dalam database');
+  });
 });
+
+
+
+
+
+// debugggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+
+// Endpoint untuk mengambil data dari database atau menyajikan file PDF
+app.get('/hargorejo/hargorejogetfiledatapendukungbantuansosial', (req, res) => {
+  const fileName = req.query.filename;
+
+  if (fileName) {
+    // Jika ada parameter filename, sajikan file PDF
+    const filePath = path.join(__dirname, 'public/file_data_pendukung_bantuan_sosial', fileName);
+
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error('File tidak ditemukan:', err);
+        res.status(404).send('File tidak ditemukan');
+        return;
+      }
+
+      res.setHeader('Content-Type', 'application/pdf');
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+    });
+  } else {
+    // Jika tidak ada parameter filename, ambil data dari database
+    const sqlQuery = 'SELECT berita_acara_musyawarah_kalurahan AS beritaAcara, daftar_mengetahui_wakil_peserta_musyawarah_kalurahan AS wakilPeserta, daftar_hadir_musyawarah_kalurahan AS daftarHadir FROM data_pendukung_bantuan_sosial WHERE id_wilayah_kalurahan=1';
+
+    db.query(sqlQuery, (err, result) => {
+      if (err) {
+        console.error('Error executing SQL query:', err);
+        res.status(500).send('Gagal mengambil data dari database');
+        return;
+      }
+      res.status(200).json(result);
+    });
+  }
+});
+
+
+
+// Endpoint untuk menghapus file
+app.delete('/hargorejo/hargorejodeletefiledatapendukungbantuansosial/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, 'public/file_data_pendukung_bantuan_sosial', filename);
+  
+  // Menghapus file dari penyimpanan
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Gagal menghapus file');
+    }
+    res.send('File berhasil dihapus');
+  });
+});
+
+
+// Menyediakan tautan unduh untuk file PDF yang telah diunggah
+app.get('/hargorejo/hargorejodownloadfiledatapendukungbantuansosial/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'public/file_data_pendukung_bantuan_sosial', req.params.filename);
+  res.download(filePath);
+});
+
+// ***********************PDF OLAh Hargorejo Close************************
 
 
 

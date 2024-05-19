@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <style>
+    iframe {
+      border: none;
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+  </style>
+
+  <div id="testing">afafafafaf</div>
+  <iframe src="localhost:5000/hargorejo/hargorejogetfiledatapendukungbantuansosial"></iframe>
+
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AdminLTE 3 | General Form Elements</title>  
@@ -41,46 +55,51 @@
     <!-- /.card-header -->
    <!-- Combined Form Start -->
 
-   <form action="/hargorejo/hargorejouploaddatapendukungbantuansosial" method="post" enctype="multipart/form-data">
+    <form action="/hargorejo/hargorejouploaddatapendukungbantuansosial" method="post" enctype="multipart/form-data">
     <div class="card-body">
-      <div class="form-group">
-        <label for="beritaAcara">Berita Acara Musyawarah Kelurahan Hargorejo</label>
-        <div class="input-group">
-          <div class="custom-file">
-            <input type="file" class="form-control" id="beritaAcara" name="beritaAcara" accept="application/pdf">
-          </div>
-         
+        <div class="form-group">
+            <label for="beritaAcara">Berita Acara Musyawarah Kelurahan Hargorejo (file wajib diberi nama "berita_acara_hargorejo")</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="form-control" id="beritaAcara" name="beritaAcara" accept="application/pdf" onchange="checkFilename('beritaAcara', 'berita_acara_hargorejo.pdf')">
+                    <label class="custom-file-label" for="beritaAcara">Pilih file</label>
+                </div>
+                <button type="button" class="btn btn-danger ml-2" onclick="clearFile('beritaAcara')">Hapus</button>
+            </div>
+        </div>
+
+        <div id="fileList"></div>
+        <!-- EORORO -->
+
+
+        <div class="form-group">
+            <label for="wakilPeserta">Daftar Mengetahui Wakil/Peserta Musyawarah Kelurahan Hargorejo (file wajib diberi nama "wakil_peserta_hargorejo")</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="form-control" id="wakilPeserta" name="wakilPeserta" accept="application/pdf" onchange="checkFilename('wakilPeserta', 'wakil_peserta_hargorejo.pdf')">
+                    <label class="custom-file-label" for="wakilPeserta">Pilih file</label>
+                </div>
+                <button type="button" class="btn btn-danger ml-2" onclick="clearFile('wakilPeserta')">Hapus</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="daftarHadir">Daftar Hadir Musyawarah Kelurahan Hargorejo (file wajib diberi nama "daftar_hadir_hargorejo")</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="form-control" id="daftarHadir" name="daftarHadir" accept="application/pdf" onchange="checkFilename('daftarHadir', 'daftar_hadir_hargorejo.pdf')">
+                    <label class="custom-file-label" for="daftarHadir">Pilih file</label>
+                </div>
+                <button type="button" class="btn btn-danger ml-2" onclick="clearFile('daftarHadir')">Hapus</button>
+            </div>
         </div>
       </div>
-  
-      <div class="form-group">
-        <label for="wakilPeserta">Daftar Mengetahui Wakil/Peserta Musyawarah Kelurahan Hargorejo</label>
-        <div class="input-group">
-          <div class="custom-file">
-            <input type="file" class="form-control" id="wakilPeserta" name="wakilPeserta" accept="application/pdf">
-          </div>
-  
-        </div>
-      </div>
-  
-      
-      <div class="form-group">
-        <label for="daftarHadir">Daftar Hadir Musyawarah Kelurahan Hargorejo</label>
-        <div class="input-group">
-          <div class="custom-file">
-            <input type="file" class="form-control" id="daftarHadir" name="daftarHadir" accept="application/pdf">
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /.card-body -->
     <div class="card-footer">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
-  
 
-     
+ 
   <!-- /.card -->
 
 
@@ -350,7 +369,7 @@ $(function () {
     // Konfirmasi pengguna sebelum menghapus data
     if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
         // Buat permintaan DELETE menggunakan fetch API
-        fetch('/hargowilis/hapusdatapenerimabantuansosialhargowilis/' + nik_kepala_keluarga, {
+        fetch('/hargorejo/hapusdatapenerimabantuansosialhargorejo/' + nik_kepala_keluarga, {
             method: 'DELETE'
         })
         .then(response => {
@@ -409,6 +428,129 @@ document.getElementById('rw').addEventListener('keydown', blockNonNumericInput);
 
 
 
+
+
+
+
+
+
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+
+      fetch('/hargorejo/hargorejouploaddatapendukungbantuansosial', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          alert(data.message);
+        } else {
+          alert('File berhasil diunggah');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+
+
+
+
+    // Fungsi untuk memeriksa nama file yang dipilih
+    function checkFilename(fieldId, expectedFilename) {
+        var fileInput = document.getElementById(fieldId);
+        var label = fileInput.nextElementSibling;
+        var selectedFile = fileInput.files[0];
+        if (selectedFile && selectedFile.name !== expectedFilename) {
+            alert(`Nama file untuk ${fieldId} harus ${expectedFilename}.`);
+            // Menghapus file yang dipilih untuk menghindari pengiriman file yang salah
+            fileInput.value = '';
+            label.textContent = 'Pilih file';
+        } else if (selectedFile) {
+            label.textContent = selectedFile.name;
+        }
+    }
+
+    // Fungsi untuk menghapus file yang dipilih
+    function clearFile(fieldId) {
+        var fileInput = document.getElementById(fieldId);
+        var label = fileInput.nextElementSibling;
+        fileInput.value = '';
+        label.textContent = 'Pilih file';
+    }
+
+
+    // Pulihkan nilai-niali formulir dari localStorage saat halaman dimuat ulang
+        window.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                const storedValue = localStorage.getItem(input.id);
+                if (storedValue) {
+                    input.value = storedValue;
+                    input.nextElementSibling.textContent = storedValue.split('\\').pop();
+                }
+            });
+        });
+
+        // Simpan nilai-niali formulir ke dalam localStorage saat formulir diubah
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.value);
+                this.nextElementSibling.textContent = this.value.split('\\').pop();
+            });
+        });
+
+
+
+
+
+
+
+
+
+// Lakukan permintaan AJAX untuk mengambil data file dari server datapendukung bantuan sosial
+
+ // Lakukan permintaan AJAX untuk mengambil data file dari server datapendukung bantuan sosial
+ function fetchAndDisplayFiles() {
+            fetch('/hargorejo/hargorejogetfiledatapendukungbantuansosial')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Tampilkan data yang diterima dari server
+                    console.log('Data yang diterima:', data);
+                    displayFileList(data);
+                })
+                .catch(error => console.error('Error fetching file data:', error));
+        }
+
+        function displayFileList(files) {
+            const fileListDiv = document.getElementById('testing');
+            fileListDiv.innerHTML = ''; // Kosongkan elemen sebelum menambahkan daftar baru
+
+            files.forEach(file => {
+                ['beritaAcara', 'wakilPeserta', 'daftarHadir'].forEach(key => {
+                    if (file[key]) {
+                        const iframe = document.createElement('iframe');
+                        const fileURL = file[key];
+
+                        iframe.src = fileURL;
+                        iframe.width = '600';
+                        iframe.height = '400';
+                        iframe.style.border = 'none';
+
+                        fileListDiv.appendChild(iframe);
+                        fileListDiv.appendChild(document.createElement('br'));
+                    }
+                });
+            });
+        }
+
+        fetchAndDisplayFiles(); // Panggil fungsi untuk memulai proses pengambilan dan penampilan data
 
 </script>
 
