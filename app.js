@@ -4,6 +4,7 @@ const path = require('path');
 const mysql = require('mysql');
 const fs = require('fs');
 const cors = require('cors');
+const session = require('express-session'); // Menambahkan session
 
 // Inisialisasi aplikasi Express
 const app = express();
@@ -51,6 +52,17 @@ const db = mysql.createConnection({
 });
 
 
+// Konfigurasi session
+app.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000 // Waktu kadaluarsa sesi dalam milidetik (misalnya 24 jam)
+  }
+}));
+
+
 //*************************************************************************KODE INI ADALAH UNTUK CONTROLLER WEBSITE**************************************************************
 
 
@@ -75,6 +87,8 @@ app.post('/login', (req, res) => {
 
       if (results.length > 0) {
           // Jika username dan password cocok, redirect ke halaman lain atau kirimkan respon berhasil
+          req.session.loggedin = true;
+          req.session.username = username;
           res.redirect('/halamandashboard')
       } else {
           // Jika username atau password tidak cocok, kirimkan respon gagal
@@ -93,14 +107,20 @@ app.get('/halamandashboard', (req, res) => {
 
 // ******************************************************** HARGOREJO**************************************************************
 // Penanganan rute untuk halaman Hargorejo
-
 app.get('/hargorejo', (req, res) => {
-  //  menggunakan modul SQL untuk mengambil data dari database
-  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=1', (err, rows) => {
-    if (err) throw err;
-    res.render('hargorejo', { data_penerima_bantuan_sosial: rows });
-  });
+  if (req.session.loggedin) {
+      //  menggunakan modul SQL untuk mengambil data dari database
+      db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=1', (err, rows) => {
+          if (err) throw err;
+          res.render('hargorejo', { data_penerima_bantuan_sosial: rows });
+      });
+  } 
+  else {
+      // Jika tidak ada sesi login, arahkan kembali ke halaman login
+      res.redirect('/');
+  }
 });
+
 
 // Menangani permintaan POST dari formulir tambah data
 app.post('/hargorejo/tambahdatapenerimabantuansosialhargorejo', (req, res) => {
@@ -246,8 +266,6 @@ app.post('/hargorejo/hargorejouploaddatapendukungbantuansosial', upload.fields([
 
 
 
-// debugggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
-
 // Endpoint untuk mengambil data dari database atau menyajikan file PDF
 app.get('/hargorejo/hargorejogetfiledatapendukungbantuansosial', (req, res) => {
   const fileName = req.query.filename;
@@ -317,18 +335,24 @@ app.get('/hargorejo/hargorejodownloadfiledatapendukungbantuansosial/:filename', 
 
 
 
+
 // ******************************************************** HARGOMULYO**************************************************************
 // Penanganan rute untuk halaman Hargomulyo
 
 
 app.get('/hargomulyo', (req, res) => {
-  //  menggunakan modul SQL untuk mengambil data dari database
-  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=2', (err, rows) => {
-    if (err) throw err;
-    res.render('hargomulyo', { data_penerima_bantuan_sosial: rows });
-  });
+  if (req.session.loggedin) {
+      //  menggunakan modul SQL untuk mengambil data dari database
+      db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=2', (err, rows) => {
+          if (err) throw err;
+          res.render('hargorejo', { data_penerima_bantuan_sosial: rows });
+      });
+  } 
+  else {
+      // Jika tidak ada sesi login, arahkan kembali ke halaman login
+      res.redirect('/');
+  }
 });
-
 
 
 // Menangani permintaan POST dari formulir tambah data
@@ -399,8 +423,6 @@ app.post('/hargomulyo/updatedatapenerimabantuansosialhargomulyo', (req, res) => 
 
 
 
-
-
 app.delete('/hargomulyo/hapusdatapenerimabantuansosialhargomulyo/:nik_modal', (req, res) => {
   const nik_modal = req.params.nik_modal;
   const query = 'DELETE FROM data_penerima_bantuan_sosial WHERE nik_kepala_keluarga = ?';
@@ -429,12 +451,19 @@ app.delete('/hargomulyo/hapusdatapenerimabantuansosialhargomulyo/:nik_modal', (r
 // Penanganan rute untuk halaman Hargotirto
 
 app.get('/hargotirto', (req, res) => {
-  //  menggunakan modul SQL untuk mengambil data dari database
-  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=3', (err, rows) => {
-    if (err) throw err;
-    res.render('hargotirto', { data_penerima_bantuan_sosial: rows });
-  });
+  if (req.session.loggedin) {
+      //  menggunakan modul SQL untuk mengambil data dari database
+      db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=3', (err, rows) => {
+          if (err) throw err;
+          res.render('hargotirto', { data_penerima_bantuan_sosial: rows });
+      });
+  } 
+  else {
+      // Jika tidak ada sesi login, arahkan kembali ke halaman login
+      res.redirect('/');
+  }
 });
+
 
 // Menangani permintaan POST dari formulir tambah data
 app.post('/hargotirto/tambahdatapenerimabantuansosialhargotirto', (req, res) => {
@@ -513,13 +542,18 @@ app.delete('/hargotirto/hapusdatapenerimabantuansosialhargotirto/:nik_modal', (r
 // ******************************************************** HARGOWILIS**************************************************************
 // Penanganan rute untuk halaman Hargowilis
 app.get('/hargowilis', (req, res) => {
-  //  menggunakan modul SQL untuk mengambil data dari database
-  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=4', (err, rows) => {
-    if (err) throw err;
-    res.render('hargowilis', { data_penerima_bantuan_sosial: rows });
-  });
+  if (req.session.loggedin) {
+      //  menggunakan modul SQL untuk mengambil data dari database
+      db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=4', (err, rows) => {
+          if (err) throw err;
+          res.render('hargowilis', { data_penerima_bantuan_sosial: rows });
+      });
+  } 
+  else {
+      // Jika tidak ada sesi login, arahkan kembali ke halaman login
+      res.redirect('/');
+  }
 });
-
 
 
 // Menangani permintaan POST dari formulir tambah data
@@ -593,26 +627,22 @@ app.delete('/hargowilis/hapusdatapenerimabantuansosialhargowilis/:nik_modal', (r
 
 
 
-
-
-
-
-
-
-
-
-
 // ******************************************************** KALIREJO**************************************************************
 
 // Penanganan rute untuk halaman Kalirejo
 app.get('/kalirejo', (req, res) => {
-  //  menggunakan modul SQL untuk mengambil data dari database
-  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=5', (err, rows) => {
-    if (err) throw err;
-    res.render('kalirejo', { data_penerima_bantuan_sosial: rows });
-  });
+  if (req.session.loggedin) {
+      //  menggunakan modul SQL untuk mengambil data dari database
+      db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=5', (err, rows) => {
+          if (err) throw err;
+          res.render('kalirejo', { data_penerima_bantuan_sosial: rows });
+      });
+  } 
+  else {
+      // Jika tidak ada sesi login, arahkan kembali ke halaman login
+      res.redirect('/');
+  }
 });
-
 // Menangani permintaan POST dari formulir tambah data
 app.post('/kalirejo/tambahdatapenerimabantuansosialkalirejo', (req, res) => {
   console.log(req.body); // Tambahkan ini untuk memeriksa data yang diterima
@@ -680,9 +710,229 @@ app.delete('/kalirejo/hapusdatapenerimabantuansosialkalirejo/:nik_modal', (req, 
 
 // ******************************************************** KALIREJO CLOSE**************************************************************
 
-//*************************************************************************KODE INI ADALAH UNTUK CONTROLLER WEBSITE**************************************************************
+//*************************************************************************KODE DI ATAS  ADALAH UNTUK CONTROLLER WEBSITE**************************************************************
 
 
+
+
+
+
+
+
+
+
+
+
+// ********************************************************** Kode di bawah Ini Fungsinya adalah UNTUK service MOBILE********************************************
+
+
+// ******************************************************** Hargorejo**************************************************************
+
+
+app.get('/hargorejodatauntukmobile/hargorejodatapenerimabantuansosial', (req, res) => {
+  // Menggunakan modul SQL untuk mengambil data dari database
+  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=1', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal mengambil data dari database' });
+    } else {
+      res.json({ data_penerima_bantuan_sosial: rows });
+    }
+  });
+});
+
+
+
+app.delete('//hargorejountukmobile//hargorejohapusdatapenerimabantuansosial/:nik_kepala_keluarga', (req, res) => {
+  const nik_kepala_keluarga = req.params.nik_kepala_keluarga; // Ambil ID data yang akan dihapus dari parameter URL
+  // Gunakan modul SQL untuk menghapus data dari database berdasarkan ID
+  db.query('DELETE FROM data_penerima_bantuan_sosial WHERE nik_kepala_keluarga = ?', nik_kepala_keluarga, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal menghapus data dari database' });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: 'Data berhasil dihapus' });
+      } else {
+        res.status(404).json({ error: 'Data tidak ditemukan' });
+      }
+    }
+  });
+});
+
+
+// ******************************************************** Hargorejo Close **************************************************************
+
+
+// ******************************************************** Hargomulyo **************************************************************
+
+app.get('/hargomulyodatauntukmobile/hargomulyodatapenerimabantuansosial', (req, res) => {
+  // Menggunakan modul SQL untuk mengambil data dari database
+  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=2', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal mengambil data dari database' });
+    } else {
+      res.json({ data_penerima_bantuan_sosial: rows });
+    }
+  });
+});
+
+
+app.delete('/hargomulyodatauntukmobile/hargomulyohapusdatapenerimabantuansosial/:nik_kepala_keluarga', (req, res) => {
+  const nik_kepala_keluarga = req.params.nik_kepala_keluarga; // Ambil ID data yang akan dihapus dari parameter URL
+  // Gunakan modul SQL untuk menghapus data dari database berdasarkan ID
+  db.query('DELETE FROM data_penerima_bantuan_sosial WHERE nik_kepala_keluarga = ?', nik_kepala_keluarga, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal menghapus data dari database' });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: 'Data berhasil dihapus' });
+      } else {
+        res.status(404).json({ error: 'Data tidak ditemukan' });
+      }
+    }
+  });
+});
+
+// ******************************************************** Hargomulyo Close **************************************************************
+
+
+
+
+
+// ******************************************************** Hargotirto **************************************************************
+
+app.get('/hargotirtodatauntukmobile/hargotirtodatapenerimabantuansosial', (req, res) => {
+  // Menggunakan modul SQL untuk mengambil data dari database
+  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=2', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal mengambil data dari database' });
+    } else {
+      res.json({ data_penerima_bantuan_sosial: rows });
+    }
+  });
+});
+
+
+app.delete('/hargotirtodatauntukmobile/hargotirtohapusdatapenerimabantuansosial/:nik_kepala_keluarga', (req, res) => {
+  const nik_kepala_keluarga = req.params.nik_kepala_keluarga; // Ambil ID data yang akan dihapus dari parameter URL
+  // Gunakan modul SQL untuk menghapus data dari database berdasarkan ID
+  db.query('DELETE FROM data_penerima_bantuan_sosial WHERE nik_kepala_keluarga = ?', nik_kepala_keluarga, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal menghapus data dari database' });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: 'Data berhasil dihapus' });
+      } else {
+        res.status(404).json({ error: 'Data tidak ditemukan' });
+      }
+    }
+  });
+});
+
+
+// ******************************************************** Hargotirto Close**************************************************************
+
+
+
+
+
+// ******************************************************** Hargowilis **************************************************************
+
+app.get('/hargowilisdatauntukmobile/hargowilisdatapenerimabantuansosial', (req, res) => {
+  // Menggunakan modul SQL untuk mengambil data dari database
+  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=2', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal mengambil data dari database' });
+    } else {
+      res.json({ data_penerima_bantuan_sosial: rows });
+    }
+  });
+});
+
+
+app.delete('/hargowilisdatauntukmobile/hargowilishapusdatapenerimabantuansosial/:nik_kepala_keluarga', (req, res) => {
+  const nik_kepala_keluarga = req.params.nik_kepala_keluarga; // Ambil ID data yang akan dihapus dari parameter URL
+  // Gunakan modul SQL untuk menghapus data dari database berdasarkan ID
+  db.query('DELETE FROM data_penerima_bantuan_sosial WHERE nik_kepala_keluarga = ?', nik_kepala_keluarga, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal menghapus data dari database' });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: 'Data berhasil dihapus' });
+      } else {
+        res.status(404).json({ error: 'Data tidak ditemukan' });
+      }
+    }
+  });
+});
+
+// ******************************************************** Hargowilis Close **************************************************************
+
+
+
+
+
+// ******************************************************** Kalirejo **************************************************************
+
+app.get('/kalirejodatauntukmobile/kalirejodatapenerimabantuansosial', (req, res) => {
+  // Menggunakan modul SQL untuk mengambil data dari database
+  db.query('SELECT * FROM data_penerima_bantuan_sosial WHERE id_wilayah_kalurahan=2', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal mengambil data dari database' });
+    } else {
+      res.json({ data_penerima_bantuan_sosial: rows });
+    }
+  });
+});
+
+
+app.delete('/kalirejodatauntukmobile/kalirejohapusdatapenerimabantuansosial/:nik_kepala_keluarga', (req, res) => {
+  const nik_kepala_keluarga = req.params.nik_kepala_keluarga; // Ambil ID data yang akan dihapus dari parameter URL
+  // Gunakan modul SQL untuk menghapus data dari database berdasarkan ID
+  db.query('DELETE FROM data_penerima_bantuan_sosial WHERE nik_kepala_keluarga = ?', nik_kepala_keluarga, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Gagal menghapus data dari database' });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: 'Data berhasil dihapus' });
+      } else {
+        res.status(404).json({ error: 'Data tidak ditemukan' });
+      }
+    }
+  });
+});
+
+// ******************************************************** Kalirejo Close **************************************************************
+
+// ******************************************************** UNTUK MOBILE SERVICE **************************************************************
+
+
+
+
+
+
+
+// Route untuk keluar dan menghapus sesi
+app.get('/logout', (req, res) => {
+  // Hapus data dari sesi
+  req.session.destroy(err => {
+      if (err) {
+          console.log(err);
+      } else {
+          // Redirect ke halaman login atau halaman lain setelah keluar
+          res.redirect('/');
+      }
+  });
+});
 
 
 
@@ -693,5 +943,5 @@ const port = 5000;
 
 // Jalankan server
 app.listen(port, () => {
-  console.log(`Server berjalan di http://localhost:${port}`);
+  console.log(`Server berjalan di http://192.168.45.101:${port}`);
 });

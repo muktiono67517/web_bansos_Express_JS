@@ -2,19 +2,6 @@
 <html lang="en">
 <head>
 
-  <style>
-    iframe {
-      border: none;
-      width: 100%;
-      height: 400px;
-      margin-bottom: 20px;
-    }
-  </style>
-
-  <div id="testing">afafafafaf</div>
-  <iframe src="localhost:5000/hargorejo/hargorejogetfiledatapendukungbantuansosial"></iframe>
-
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AdminLTE 3 | General Form Elements</title>  
@@ -58,39 +45,36 @@
     <form action="/hargorejo/hargorejouploaddatapendukungbantuansosial" method="post" enctype="multipart/form-data">
     <div class="card-body">
         <div class="form-group">
-            <label for="beritaAcara">Berita Acara Musyawarah Kelurahan Hargorejo (file wajib diberi nama "berita_acara_hargorejo")</label>
+            <label for="beritaAcara">Berita Acara Musyawarah Kalurahan Hargorejo</label>
             <div class="input-group">
                 <div class="custom-file">
                     <input type="file" class="form-control" id="beritaAcara" name="beritaAcara" accept="application/pdf" onchange="checkFilename('beritaAcara', 'berita_acara_hargorejo.pdf')">
                     <label class="custom-file-label" for="beritaAcara">Pilih file</label>
                 </div>
-                <button type="button" class="btn btn-danger ml-2" onclick="clearFile('beritaAcara')">Hapus</button>
+                <!-- <button type="button" class="btn btn-danger ml-2" onclick="clearFile('beritaAcara')">Hapus</button> -->
             </div>
         </div>
 
-        <div id="fileList"></div>
-        <!-- EORORO -->
-
 
         <div class="form-group">
-            <label for="wakilPeserta">Daftar Mengetahui Wakil/Peserta Musyawarah Kelurahan Hargorejo (file wajib diberi nama "wakil_peserta_hargorejo")</label>
+            <label for="wakilPeserta">Daftar Mengetahui Wakil/Peserta Musyawarah Kalurahan Hargorejo </label>
             <div class="input-group">
                 <div class="custom-file">
                     <input type="file" class="form-control" id="wakilPeserta" name="wakilPeserta" accept="application/pdf" onchange="checkFilename('wakilPeserta', 'wakil_peserta_hargorejo.pdf')">
                     <label class="custom-file-label" for="wakilPeserta">Pilih file</label>
                 </div>
-                <button type="button" class="btn btn-danger ml-2" onclick="clearFile('wakilPeserta')">Hapus</button>
+                <!-- <button type="button" class="btn btn-danger ml-2" onclick="clearFile('wakilPeserta')">Hapus</button> -->
             </div>
         </div>
 
         <div class="form-group">
-            <label for="daftarHadir">Daftar Hadir Musyawarah Kelurahan Hargorejo (file wajib diberi nama "daftar_hadir_hargorejo")</label>
+            <label for="daftarHadir">Daftar Hadir Musyawarah Kalurahan Hargorejo </label>
             <div class="input-group">
                 <div class="custom-file">
                     <input type="file" class="form-control" id="daftarHadir" name="daftarHadir" accept="application/pdf" onchange="checkFilename('daftarHadir', 'daftar_hadir_hargorejo.pdf')">
                     <label class="custom-file-label" for="daftarHadir">Pilih file</label>
                 </div>
-                <button type="button" class="btn btn-danger ml-2" onclick="clearFile('daftarHadir')">Hapus</button>
+                <!-- <button type="button" class="btn btn-danger ml-2" onclick="clearFile('daftarHadir')">Hapus</button> -->
             </div>
         </div>
       </div>
@@ -458,20 +442,20 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
 
 
 
-    // Fungsi untuk memeriksa nama file yang dipilih
-    function checkFilename(fieldId, expectedFilename) {
-        var fileInput = document.getElementById(fieldId);
-        var label = fileInput.nextElementSibling;
-        var selectedFile = fileInput.files[0];
-        if (selectedFile && selectedFile.name !== expectedFilename) {
-            alert(`Nama file untuk ${fieldId} harus ${expectedFilename}.`);
-            // Menghapus file yang dipilih untuk menghindari pengiriman file yang salah
-            fileInput.value = '';
-            label.textContent = 'Pilih file';
-        } else if (selectedFile) {
-            label.textContent = selectedFile.name;
-        }
-    }
+    // // Fungsi untuk memeriksa nama file yang dipilih
+    // function checkFilename(fieldId, expectedFilename) {
+    //     var fileInput = document.getElementById(fieldId);
+    //     var label = fileInput.nextElementSibling;
+    //     var selectedFile = fileInput.files[0];
+    //     if (selectedFile && selectedFile.name !== expectedFilename) {
+    //         alert(`Nama file untuk ${fieldId} harus ${expectedFilename}.`);
+    //         // Menghapus file yang dipilih untuk menghindari pengiriman file yang salah
+    //         fileInput.value = '';
+    //         label.textContent = 'Pilih file';
+    //     } else if (selectedFile) {
+    //         label.textContent = selectedFile.name;
+    //     }
+    // }
 
     // Fungsi untuk menghapus file yang dipilih
     function clearFile(fieldId) {
